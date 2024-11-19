@@ -1,3 +1,7 @@
+/*https://tympanus.net/codrops/2023/01/25/crafting-a-dice-roller-with-three-js-and-cannon-es/
+https://codepen.io/ksenia-k/pen/QWZVvxm
+참고한 사이트
+*/
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es';
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js";

@@ -1,8 +1,5 @@
 package com.example;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import com.example.PlayerCountServlet;
 class Player{
     int PlayerNum = 0;
     String PlayerName = "";
@@ -33,15 +30,22 @@ public class Yacht
         int PlayerCount = 4; //PlayerCountServlet.getPlayerCount();
         Player Player[] = new Player[PlayerCount+1];
         int[] dice = new int[5];
-        ArrayList<Integer> save = new ArrayList<Integer>();
-
+        for(int i=0;i<12;i++){
+            for(int j=0;j<PlayerCount;j++){
+                Roll(j);
+            }
+        }
 
     }
     public static void Roll(int num) {
-        int dice[] = new int[num];
-        for(int i=0;i<num;i++){
-            dice[i] = (int)(Math.random()*6)+1;
+        ArrayList<Integer> dice = new ArrayList<Integer>();
+        ArrayList<Integer> save = new ArrayList<Integer>();
+        int leftNum = 5;
+        for(int i=0;i<3;i++){
+            for(int j=0;j<leftNum;j++){
+                dice.add((int)(Math.random() * 6) + 1);
+            }
         }
-        
+
     }
 }
