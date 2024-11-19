@@ -1,15 +1,47 @@
 package com.example;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
+import com.example.PlayerCountServlet;
+class Player{
+    int PlayerNum = 0;
+    String PlayerName = "";
 
-/**
- * Hello world!
- *
- */
+    int Ones=0;
+    int Twos=0;
+    int Threes=0;
+    int Fours=0;
+    int Fives=0;
+    int Sixes=0;
+    
+    int subTotal=0;//63점 이상이면 35점 추가
+
+    int Choice=0;
+    int FourOfAKind=0;
+    int FullHouse=0;
+    int SmallStraight=0;
+    int LargeStraight=0;
+    int Yacht=0;
+
+    int Total=0;
+}
 public class Yacht 
 {
     public static void main( String[] args )
     {
         
-        System.out.println( "Hello World!" );
+        int PlayerCount = 4; //PlayerCountServlet.getPlayerCount();
+        Player Player[] = new Player[PlayerCount+1];
+        int[] dice = new int[5];
+        ArrayList<Integer> save = new ArrayList<Integer>();
+
+
+    }
+    public static void Roll(int num) {
+        int dice[] = new int[num];
+        for(int i=0;i<num;i++){
+            dice[i] = (int)(Math.random()*6)+1;
+        }
+        
     }
 }
