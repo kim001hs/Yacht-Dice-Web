@@ -13,7 +13,7 @@ const rollBtn = document.querySelector('#roll-btn');
 let renderer, scene, camera, diceMesh, physicsWorld;
 
 const params = {
-    numberOfDice: 2/* num */,
+    numberOfDice: 5/* num */,
     segments: 40,
     edgeRadius: .1,
     notchRadius: .15,
@@ -57,7 +57,8 @@ function initScene() {
     topLight.shadow.camera.near = 5;
     topLight.shadow.camera.far = 400;
     scene.add(topLight);
-
+	 
+	 createWalls();
     createFloor();
     diceMesh = createDiceMesh();
     for (let i = 0; i < params.numberOfDice; i++) {
@@ -78,6 +79,54 @@ function initPhysics() {
     physicsWorld.defaultContactMaterial.restitution = .3;
 }
 
+function createWalls() {
+    const wallThickness = .5; // 벽 두께
+    const wallHeight = 5;   // 벽 높이
+    const wallSize = 10;     // 벽 길이 (바닥 크기와 동일)
+    const floorY = -3;       // 바닥의 Y 위치
+
+    const wallPositions = [
+        { x: 0, y: floorY + wallHeight / 2, z: -wallSize / 2 }, // 앞벽
+        { x: 0, y: floorY + wallHeight / 2, z: wallSize / 2 },  // 뒷벽
+        { x: -wallSize / 2, y: floorY + wallHeight / 2, z: 0 }, // 왼쪽 벽
+        { x: wallSize / 2, y: floorY + wallHeight / 2, z: 0 }   // 오른쪽 벽
+    ];
+
+    const wallRotations = [
+        { axis: new THREE.Vector3(1, 0, 0), angle: 0 },        // 앞벽
+        { axis: new THREE.Vector3(1, 0, 0), angle: 0 },        // 뒷벽
+        { axis: new THREE.Vector3(0, 1, 0), angle: Math.PI / 2 }, // 왼쪽 벽
+        { axis: new THREE.Vector3(0, 1, 0), angle: Math.PI / 2 }  // 오른쪽 벽
+    ];
+
+    wallPositions.forEach((pos, index) => {
+        // Three.js 벽 생성
+        const wall = new THREE.Mesh(
+            new THREE.BoxGeometry(wallSize, wallHeight, wallThickness),
+            new THREE.MeshStandardMaterial({ color: 0x888888 })
+        );
+        wall.position.set(pos.x, pos.y, pos.z);
+        wall.quaternion.setFromAxisAngle(
+            wallRotations[index].axis,
+            wallRotations[index].angle
+        );
+        wall.receiveShadow = true;
+        scene.add(wall);
+
+        // Cannon.js 물리 벽 생성
+        const wallBody = new CANNON.Body({
+            type: CANNON.Body.STATIC,
+            shape: new CANNON.Box(new CANNON.Vec3(
+                wallSize / 2,       // 벽의 길이 절반
+                wallHeight / 2,     // 벽의 높이 절반
+                wallThickness / 2   // 벽의 두께 절반
+            )),
+        });
+        wallBody.position.copy(wall.position);
+        wallBody.quaternion.copy(wall.quaternion);
+        physicsWorld.addBody(wallBody);
+    });
+}
 
 function createFloor() {
     const floor = new THREE.Mesh(
