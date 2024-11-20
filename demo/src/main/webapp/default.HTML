@@ -2,11 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>인원수 받기</title>
+    <title>인원 수, 닉네임 설정</title>
 </head>
 <body>
-    
-    <h3>인원 수: <span id="playerCount">1</span></h3>
+    <h3>플레이어 수: <span id="playerCount">1</span></h3>
+    <button onclick="decreaseCount()">-</button>
+    <script>
+        function decreaseCount() {
+            if(count == 1) return;
+            count--;
+            document.getElementById("playerCount").textContent = count;
+            
+            // 서버로 인원 수 전달
+            fetch('/setPlayerCount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ playerCount: count })
+            });
+        }
+    </script>
     <button onclick="increaseCount()">+</button>
     <script>
         let count = 1;
