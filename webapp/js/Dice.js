@@ -9,27 +9,31 @@ import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 const canvasEl = document.querySelector('#canvas');
 const scoreResult = document.querySelector('#score-result');
 const rollBtn = document.querySelector('#roll-btn');
-
 let renderer, scene, camera, diceMesh, physicsWorld;
 
 const params = {
-    numberOfDice: 5/* num */,
     segments: 40,
     edgeRadius: .1,
     notchRadius: .15,
     notchDepth: .09,
 };
-
+export let diceResult = [];
 const diceArray = [];
+export function initializeDiceApp(numberOfDice) {
+    initPhysics();
+    initScene(numberOfDice);
+}
+export function RollDice() {
+    throwDice();
+}
+export function getDiceResult(){
+    return diceResult;
+}
 
-initPhysics();
-initScene();
-
-window.addEventListener('resize', updateSceneSize);
-window.addEventListener('dblclick', throwDice);
+window.addEventListener('resize', updateSceneSize); 
 rollBtn.addEventListener('click', throwDice);
 
-function initScene() {
+function initScene(numberOfDice) {
 
     renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -37,7 +41,7 @@ function initScene() {
         canvas: canvasEl
     });
     renderer.shadowMap.enabled = true
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));//모바일에서도 잘 보이게
 
     scene = new THREE.Scene();
 
@@ -61,13 +65,10 @@ function initScene() {
 	createWalls();
     createFloor();
     diceMesh = createDiceMesh();
-    for (let i = 0; i < params.numberOfDice; i++) {
+    for (let i = 0; i < numberOfDice; i++) {
         diceArray.push(createDice());
         addDiceEvents(diceArray[i]);
     }
-
-    throwDice();
-
     render();
 }
 
@@ -322,13 +323,13 @@ function addDiceEvents(dice) {
 }
 
 function showRollResults(score) {
+    diceResult.push(score);
     if (scoreResult.innerHTML === '') {
         scoreResult.innerHTML += score;
     } else {
         scoreResult.innerHTML += (' + ' + score);
     }
 }
-
 function render() {
     physicsWorld.fixedStep();
 
@@ -348,6 +349,7 @@ function updateSceneSize() {
 }
 
 function throwDice() {
+    diceResult = [];
     scoreResult.innerHTML = '';
 
     diceArray.forEach((d, dIdx) => {
@@ -369,4 +371,5 @@ function throwDice() {
 
         d.body.allowSleep = true;
     });
+    console.log(diceResult);
 }
