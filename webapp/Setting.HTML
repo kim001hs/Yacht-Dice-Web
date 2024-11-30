@@ -19,33 +19,33 @@
     </div>
     <button id="save-player">✔ </button>
     <script>
-        var count = 1;
+        var playerCount = 1;
 
         function decreaseCount() {
-            if (count === 1) return; // 플레이어 수가 1이면 줄이지 않음
-            count--;
-            document.getElementById("playerCount").textContent = count;
+            if (playerCount === 1) return; // 플레이어 수가 1이면 줄이지 않음
+            playerCount--;
+            document.getElementById("playerCount").textContent = playerCount;
 
             // 마지막 플레이어의 닉네임 입력 창 삭제
-            const playerInput = document.getElementById(`player-${count + 1}`);
+            const playerInput = document.getElementById(`player-${playerCount + 1}`);
             if (playerInput) {
                 playerInput.remove();
             }
         }
 
         function increaseCount() {
-            count++;
-            document.getElementById("playerCount").textContent = count;
+            playerCount++;
+            document.getElementById("playerCount").textContent = playerCount;
 
             // 새로운 닉네임 입력 창 추가
             const nicknameContainer = document.getElementById("nicknameContainer");
             
             // 새로운 닉네임 입력 창 생성
             const newPlayerDiv = document.createElement("div");
-            newPlayerDiv.id = `player-${count}`;
+            newPlayerDiv.id = `player-${playerCount}`;
             newPlayerDiv.innerHTML = `
-                <label>플레이어 ${count} 닉네임: </label>
-                <input type="text" placeholder="플레이어 ${count} 닉네임">
+                <label>플레이어 ${playerCount} 닉네임: </label>
+                <input type="text" placeholder="플레이어 ${playerCount} 닉네임">
             `;
             
             // 닉네임 컨테이너에 추가

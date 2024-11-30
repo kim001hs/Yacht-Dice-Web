@@ -3,7 +3,7 @@ let playerCountElement = document.querySelector('#playerCount');
 // 요소의 텍스트 내용을 숫자로 변환
 export let playerCount = 1;
 const saveBtn = document.querySelector('#save-player'); // 저장 버튼 가져오기
-let playerNames = []; // 닉네임 저장 배열
+export let playerNames = []; // 닉네임 저장 배열
 document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.querySelector('#save-player');
     if (saveBtn) {
@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('저장 버튼이 없습니다.');
     }
 });
-export { playerNames }; // 외부에서 사용할 수 있도록 내보내기
 function updatePlayerCount() {
     playerCountElement = document.querySelector('#playerCount');
     playerCount = parseInt(playerCountElement.textContent, 10);
@@ -27,5 +26,9 @@ function saveNicknames() {
     }
     console.log(playerNames); // 닉네임 출력 (테스트용)
     console.log(playerCount); // 플레이어 수 출력 (테스트용)
-    window.location.href = "Dice.html"; // 주사위 페이지로 이동
+    const params = new URLSearchParams({
+        playerCount: playerCount, // HTML에서 사용 중인 count 변수
+        playerNames: JSON.stringify(playerNames),
+    });
+    window.location.href = `Dice.html?${params.toString()}`; // 주사위 페이지로 이동
 }

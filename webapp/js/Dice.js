@@ -17,23 +17,11 @@ const params = {
     notchRadius: .15,
     notchDepth: .09,
 };
-export let diceResult = [];
 const diceArray = [];
-export function initializeDiceApp(numberOfDice) {
-    initPhysics();
-    initScene(numberOfDice);
-}
-export function RollDice() {
-    throwDice();
-}
-export function getDiceResult(){
-    return diceResult;
-}
-
+export let diceResult = [];
 window.addEventListener('resize', updateSceneSize); 
-rollBtn.addEventListener('click', throwDice);
 
-function initScene(numberOfDice) {
+export function initScene(numberOfDice) {
 
     renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -72,7 +60,7 @@ function initScene(numberOfDice) {
     render();
 }
 
-function initPhysics() {
+export function initPhysics() {
     physicsWorld = new CANNON.World({
         allowSleep: true,
         gravity: new CANNON.Vec3(0, -60, 0),
@@ -273,7 +261,7 @@ function createBoxGeometry() {
 function createInnerGeometry() {
     const baseGeometry = new THREE.PlaneGeometry(1 - 2 * params.edgeRadius, 1 - 2 * params.edgeRadius);
     const offset = .48;
-    return BufferGeometryUtils.mergeBufferGeometries([
+    return BufferGeometryUtils.mergeGeometries([
         baseGeometry.clone().translate(0, 0, offset),
         baseGeometry.clone().translate(0, 0, -offset),
         baseGeometry.clone().rotateX(.5 * Math.PI).translate(0, -offset, 0),
@@ -348,7 +336,7 @@ function updateSceneSize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-function throwDice() {
+export function throwDice() {
     diceResult = [];
     scoreResult.innerHTML = '';
 

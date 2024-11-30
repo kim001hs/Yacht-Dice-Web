@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yacht Dice</title>
-    <!-- css 연결 -->
+    <!-- CSS 연결 -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
+        <!-- 주사위 캔버스 -->
         <canvas id="canvas"></canvas>
+        <!-- UI 컨트롤 -->
         <div class="ui-controls">
-            <div class="score">Score: <span id="score-result"></span></div>
+            <div class="score">Score: <span id="score-result">0</span></div>
             <button id="roll-btn">Roll dice</button>
         </div>
     </div>
-
     
-    <!-- 자바스크립트 라이브러리 연결 -->
+    <!-- 동적 점수판 -->
+    <div class="scoreboard"></div>
+    <!-- 자바스크립트 라이브러리 -->
     <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
     <script type="importmap">
     {
@@ -27,9 +30,10 @@
         }
     }
     </script>
-    <!-- 자바스크립트 연결 -->
-    <!-- <script type="module" src="js/Dice.js"></script> -->
+    
+    <!-- 자바스크립트 -->
+    <script type="module" src="js/Setting.js"></script>
+    <script type="module" src="js/Dice.js"></script>
     <script type="module" src="js/test.js"></script>
-
 </body>
 </html>
