@@ -17,12 +17,12 @@ const params = {
     notchRadius: .15,
     notchDepth: .09,
 };
-const diceArray = [];
+let diceArray = [];
 export let diceResult = [];
 window.addEventListener('resize', updateSceneSize); 
 
 export function initScene(numberOfDice) {
-
+    if(!renderer) {
     renderer = new THREE.WebGLRenderer({
         alpha: true,
         antialias: true,
@@ -30,9 +30,11 @@ export function initScene(numberOfDice) {
     });
     renderer.shadowMap.enabled = true
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));//모바일에서도 잘 보이게
-
-    scene = new THREE.Scene();
-
+    }
+    if(!scene) {
+        scene = new THREE.Scene();
+    }
+    if(!camera) {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 100)
     camera.position.set(0, 3, 0).multiplyScalar(6);//위에서 아래보기
     camera.lookAt(camera.position.x, 0, camera.position.z);
@@ -53,8 +55,12 @@ export function initScene(numberOfDice) {
 	createWalls();
     createFloor();
     diceMesh = createDiceMesh();
+    }
+    scoreResult.innerHTML = '';
+    
+    diceResult = [];
     for (let i = 0; i < numberOfDice; i++) {
-        diceArray.push(createDice());
+        diceArray[i]=(createDice());
         addDiceEvents(diceArray[i]);
     }
     render();
@@ -169,7 +175,6 @@ function createDice() {
         sleepTimeLimit: .1
     });
     physicsWorld.addBody(body);
-
     return {mesh, body};
 }
 
@@ -321,7 +326,7 @@ function showRollResults(score) {
 function render() {
     physicsWorld.fixedStep();
 
-    for (const dice of diceArray) {
+    for (let dice of diceArray) {
         dice.mesh.position.copy(dice.body.position)
         dice.mesh.quaternion.copy(dice.body.quaternion)
     }

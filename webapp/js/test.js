@@ -30,13 +30,15 @@ console.log(playerCount); // 플레이어 수 출력 (테스트용)
 let players;
 let showPossibleScore = new Player();
 let saveDice = [];
+let turn =1;
 PlayerSet();
 showTable();
 // 초기화 및 실행
 Dice.initPhysics();
-Dice.initScene(5);
+Dice.initScene(5);  
 console.log(Dice.diceResult);
-//Yacht();
+console.log(Dice.diceArray);
+Yacht();
 function PlayerSet(){
     players = Array.from({ length: playerCount + 1 }, () => new Player());
     for(let i=1;i<=playerCount;i++){
@@ -45,45 +47,54 @@ function PlayerSet(){
     }
 }
 function Yacht(){
-    for(var i=0;i<12;i++){
-        for(var j=1;j<=playerCount;j++){
-            console.log(players[j].name+"의 차례입니다.");
-            showPossibleScore=new Player();//임시로 보일 스코어
-            Dice.initScene(5);
-            saveDice = []; //저장할 주사위
-            rollBtn.addEventListener('click', RollDiceOnce);
-            // while(Dice.diceResult.size!=5){
-            //     rollBtn.disabled = false;
-            // }
-            nowScore(j);
-            //if(스코어 클릭){visited[스코어번호]=true;continue(다음턴);}
-            //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
-            rollBtn.disabled = false;
-            // while(Dice.diceResult.size!=5-saveDice.size){
-            //     rollBtn.disabled = false;
-            // }
-            nowScore(j);
-            //if(스코어 클릭){visited[스코어번호]=true;continue;}
-            //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
-            rollBtn.disabled = false;
-            // while(Dice.diceResult.size!=5-saveDice.size){
-            //     rollBtn.disabled = false;
-            // }
-            nowScore(j);
-            //if(
-            //스코어 클릭){visited[스코어번호]=true;
-            //players[j].(클릭한 스코어)=showPossibleScore.(클릭한 스코어);
-            //continue;}
+    if(turn==playerCount*12+1){
+        console.log("게임 종료");
+        return;
+    }
+    let i=turn%playerCount;
+    console.log(players[i].name+"의 차례입니다.");
+    showPossibleScore=new Player();//임시로 보일 스코어
+    //Dice.initScene(4);
+    saveDice = []; //저장할 주사위
+    rollBtn.addEventListener('click', RollDiceOnce);
+}
+function Yacht1(){
+    for(var i=1;i<=12*playerCount;i++){
+        console.log(players[i].name+"의 차례입니다.");
+        showPossibleScore=new Player();//임시로 보일 스코어
+        //Dice.initScene(5);
+        saveDice = []; //저장할 주사위
+        rollBtn.addEventListener('click', RollDiceOnce);
+        // while(Dice.diceResult.size!=5){
+        //     rollBtn.disabled = false;
+        // }
+        nowScore(i);
+        //if(스코어 클릭){visited[스코어번호]=true;continue(다음턴);}
+        //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
+        rollBtn.disabled = false;
+        // while(Dice.diceResult.size!=5-saveDice.size){
+        //     rollBtn.disabled = false;
+        // }
+        nowScore(i);
+        //if(스코어 클릭){visited[스코어번호]=true;continue;}
+        //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
+        rollBtn.disabled = false;
+        // while(Dice.diceResult.size!=5-saveDice.size){
+        //     rollBtn.disabled = false;
+        // }
+        nowScore(i);
+        //if(
+        //스코어 클릭){visited[스코어번호]=true;
+        //players[j].(클릭한 스코어)=showPossibleScore.(클릭한 스코어);
+        //continue;}
 
-
-            //표에 클릭할 수 있게 점수 보여줌
-            //결과버튼 5개 클릭하면 저장
-            showTable();
-        }
+        //표에 클릭할 수 있게 점수 보여줌
+        //결과버튼 5개 클릭하면 저장
+        showTable();
     }
 }
 async function RollDiceOnce() {
-    Dice.initScene(5-saveDice.size);
+    Dice.initScene(4-saveDice.size);
     Dice.throwDice(); // 주사위 굴리기 함수 호출
     rollBtn.disabled = true; // 버튼 비활성화
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -174,6 +185,12 @@ function selectTable(playerIndex, category) {
 
             // 표 업데이트
             showTable();
+
+            // 방문 처리
+            players[playerIndex].visited[category] = true;
+
+            //다음 턴으로 넘어감
+
 
             // 버튼 제거
             button.remove();
