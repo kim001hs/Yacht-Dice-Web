@@ -31,11 +31,13 @@ let players;
 let showPossibleScore = new Player();
 let saveDice = [];
 let turn =1;
+let rollCount=0;
 PlayerSet();
 showTable();
 // 초기화 및 실행
 Dice.initPhysics();
 Dice.initScene(5);  
+Dice.updateDiceCount(4);
 console.log(Dice.diceResult);
 console.log(Dice.diceArray);
 Yacht();
@@ -54,9 +56,11 @@ function Yacht(){
     let i=turn%playerCount;
     console.log(players[i].name+"의 차례입니다.");
     showPossibleScore=new Player();//임시로 보일 스코어
-    //Dice.initScene(4);
+    Dice.updateDiceCount(5);
     saveDice = []; //저장할 주사위
     rollBtn.addEventListener('click', RollDiceOnce);
+    rollBtn.disabled = false;
+    rollBtn.disabled = false;
 }
 function Yacht1(){
     for(var i=1;i<=12*playerCount;i++){
@@ -94,17 +98,20 @@ function Yacht1(){
     }
 }
 async function RollDiceOnce() {
-    Dice.initScene(4-saveDice.size);
     Dice.throwDice(); // 주사위 굴리기 함수 호출
     rollBtn.disabled = true; // 버튼 비활성화
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    if(Dice.diceResult.length!=5){
+        rollBtn.disabled = false;
+        return;
+    }
+    nowScore(turn%playerCount);
+    console.log(Dice.diceResult);
 }
 
 function nowScore(playerNum){
     //추가할 수 있는 점수 표시
-    for(var i=0;i<12;i++){
+    for(let i=1;i<=12;i++){
         if(!players[playerNum].visited[i]){
             calculateScore(i,playerNum);
         }
@@ -158,57 +165,64 @@ function showTable() {
     table.appendChild(tbody);
     scoreboard.appendChild(table);
 }
-function selectTable(playerIndex, category) {
+
+function selectTable(playerIndex, category,i) {
     const possibleValue = showPossibleScore[category];
-    const currentValue = players[playerIndex][category];
 
-    // 값이 다를 때만 버튼 추가
-    if (possibleValue !== currentValue) {
-        const cell = document.querySelector(`.score[data-player="${playerIndex}"][data-category="${category}"]`);
+    const cell = document.querySelector(`.score[data-player="${playerIndex}"][data-category="${category}"]`);
+    // 기존 버튼 제거
+    const existingButton = cell.querySelector('button');
+    if (existingButton) existingButton.remove();
 
-        // 기존 버튼 제거
-        const existingButton = cell.querySelector('button');
-        if (existingButton) existingButton.remove();
+    // 새 버튼 추가
+    const button = document.createElement('button');
+    button.textContent = possibleValue;
+    button.style.color = 'red';
+    button.style.fontWeight = 'bold';
+    button.style.backgroundColor = 'transparent';
+    button.style.border = 'none';
+    button.style.cursor = 'pointer';
+    button.style.position = 'relative';
+    button.style.zIndex = '10';
+    //임시임시
+    //임시임시
+    button.style.width = '50px';
+    button.style.height = '30px';
+    button.style.backgroundColor = 'yellow'; // 임시 디버깅용
 
-        // 새 버튼 추가
-        const button = document.createElement('button');
-        button.textContent = possibleValue;
-        button.style.color = 'red';
-        button.style.fontWeight = 'bold';
-        button.style.backgroundColor = 'transparent';
-        button.style.border = 'none';
-        button.style.cursor = 'pointer';
+    button.addEventListener('click', () => {
+        console.log('버튼이 클릭되었습니다!');
+        // 점수 반영
+        players[playerIndex][category] = possibleValue;
 
-        button.addEventListener('click', () => {
-            // 점수 반영
-            players[playerIndex][category] = possibleValue;
+        // 표 업데이트
+        showTable();
 
-            // 표 업데이트
-            showTable();
+        // 방문 처리
+        players[playerIndex].visited[i-1] = true;
 
-            // 방문 처리
-            players[playerIndex].visited[category] = true;
+        // 버튼 제거
+        button.remove();
 
-            //다음 턴으로 넘어감
+        //다음 턴으로 넘어감
+        turn++;
+        Yacht();
+        return;
+    });
+    console.log(cell.childNodes); // 버튼이 추가되었는지 확인
+    cell.appendChild(button);
 
-
-            // 버튼 제거
-            button.remove();
-        });
-
-        cell.appendChild(button);
-    }
 }
 
 function calculateScore(i,playerNum) {
-    switch (i+1) {
+    switch (i) {
         case 1: // Ones
             for (let j = 0; j < 5; j++) {
                 if (Dice.diceResult[j] === 1) {
                     showPossibleScore.Ones += 1;
                 }
             }
-            selectTable(playerNum, "Ones");
+            selectTable(playerNum, "Ones",1);
             break;
         case 2: // Twos
             for (let j = 0; j < 5; j++) {
@@ -216,7 +230,7 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.Twos += 2;
                 }
             }
-            selectTable(playerNum, "Twos");
+            selectTable(playerNum, "Twos",2);
             break;
         case 3: // Threes
             for (let j = 0; j < 5; j++) {
@@ -224,7 +238,7 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.Threes += 3;
                 }
             }
-            selectTable(playerNum, "Threes");
+            selectTable(playerNum, "Threes",3);
             break;
         case 4: // Fours
             for (let j = 0; j < 5; j++) {
@@ -232,7 +246,7 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.Fours += 4;
                 }
             }
-            selectTable(playerNum, "Fours");
+            selectTable(playerNum, "Fours",4);
             break;
         case 5: // Fives
             for (let j = 0; j < 5; j++) {
@@ -240,7 +254,7 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.Fives += 5;
                 }
             }
-            selectTable(playerNum, "Fives");
+            selectTable(playerNum, "Fives",5);
             break;
         case 6: // Sixes
             for (let j = 0; j < 5; j++) {
@@ -248,13 +262,13 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.Sixes += 6;
                 }
             }
-            selectTable(playerNum, "Sixes");
+            selectTable(playerNum, "Sixes",6);
             break;
         case 7: // Choice
             for (let j = 0; j < 5; j++) {
                 showPossibleScore.Choice += Dice.diceResult[j];
             }
-            selectTable(playerNum, "Choice");
+            selectTable(playerNum, "Choice",7);
             break;
         case 8: // Four of a Kind
             if (hasNOfAKind(Dice.diceResult, 4)) {
@@ -262,31 +276,31 @@ function calculateScore(i,playerNum) {
                     showPossibleScore.FourOfAKind += Dice.diceResult[j];
                 }
             }
-            selectTable(playerNum, "FourOfAKind");
+            selectTable(playerNum, "FourOfAKind",8);
             break;
         case 9: // Full House
             if (isFullHouse(Dice.diceResult)) {
                 showPossibleScore.FullHouse = 25;
             }
-            selectTable(playerNum, "FullHouse");
+            selectTable(playerNum, "FullHouse",9);
             break;
         case 10: // Small Straight
             if (isSmallStraight(Dice.diceResult)) {
                 showPossibleScore.SmallStraight = 30;
             }
-            selectTable(playerNum, "SmallStraight");
+            selectTable(playerNum, "SmallStraight",10);
             break;
         case 11: // Large Straight
             if (isLargeStraight(Dice.diceResult)) {
                 showPossibleScore.LargeStraight = 40;
             }
-            selectTable(playerNum, "LargeStraight");
+            selectTable(playerNum, "LargeStraight",11);
             break;
         case 12: // Yacht
             if (hasNOfAKind(Dice.diceResult, 5)) {
                 showPossibleScore.Yacht = 50;
             }
-            selectTable(playerNum, "Yacht");
+            selectTable(playerNum, "Yacht",12);
             break;
         default:
             throw new Error("유효하지 않은 카테고리입니다.");

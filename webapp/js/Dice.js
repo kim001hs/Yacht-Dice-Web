@@ -65,6 +65,17 @@ export function initScene(numberOfDice) {
     }
     render();
 }
+export function updateDiceCount(newNumberOfDice) {
+    // 기존 주사위 삭제
+    diceArray.forEach((dice) => {
+        scene.remove(dice.mesh);
+        physicsWorld.removeBody(dice.body);
+    });
+    diceArray = [];
+
+    // 새 주사위 개수로 초기화
+    initScene(newNumberOfDice);
+}
 
 export function initPhysics() {
     physicsWorld = new CANNON.World({
