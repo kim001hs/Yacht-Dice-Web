@@ -30,7 +30,7 @@ console.log(playerCount); // 플레이어 수 출력 (테스트용)
 let players;
 let showPossibleScore = new Player();
 let saveDice = [];
-let turn =1;
+let turn =0;
 let rollCount=0;
 PlayerSet();
 showTable();
@@ -39,7 +39,6 @@ Dice.initPhysics();
 Dice.initScene(5);  
 Dice.updateDiceCount(4);
 console.log(Dice.diceResult);
-console.log(Dice.diceArray);
 Yacht();
 function PlayerSet(){
     players = Array.from({ length: playerCount + 1 }, () => new Player());
@@ -49,71 +48,41 @@ function PlayerSet(){
     }
 }
 function Yacht(){
-    if(turn==playerCount*12+1){
+    if(turn==playerCount*12){
         console.log("게임 종료");
         return;
     }
-    let i=turn%playerCount;
+    let i=turn%playerCount+1;
     console.log(players[i].name+"의 차례입니다.");
-    showPossibleScore=new Player();//임시로 보일 스코어
     Dice.updateDiceCount(5);
     saveDice = []; //저장할 주사위
-    rollBtn.addEventListener('click', RollDiceOnce);
-    rollBtn.disabled = false;
-    rollBtn.disabled = false;
+    rollCount=0;
+    rollBtn.addEventListener('click', RollDice);
 }
-function Yacht1(){
-    for(var i=1;i<=12*playerCount;i++){
-        console.log(players[i].name+"의 차례입니다.");
-        showPossibleScore=new Player();//임시로 보일 스코어
-        //Dice.initScene(5);
-        saveDice = []; //저장할 주사위
-        rollBtn.addEventListener('click', RollDiceOnce);
-        // while(Dice.diceResult.size!=5){
-        //     rollBtn.disabled = false;
-        // }
-        nowScore(i);
-        //if(스코어 클릭){visited[스코어번호]=true;continue(다음턴);}
-        //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
-        rollBtn.disabled = false;
-        // while(Dice.diceResult.size!=5-saveDice.size){
-        //     rollBtn.disabled = false;
-        // }
-        nowScore(i);
-        //if(스코어 클릭){visited[스코어번호]=true;continue;}
-        //if(주사위 클릭){saveDice.push(Dice.diceResult[주사위번호]);}
-        rollBtn.disabled = false;
-        // while(Dice.diceResult.size!=5-saveDice.size){
-        //     rollBtn.disabled = false;
-        // }
-        nowScore(i);
-        //if(
-        //스코어 클릭){visited[스코어번호]=true;
-        //players[j].(클릭한 스코어)=showPossibleScore.(클릭한 스코어);
-        //continue;}
 
-        //표에 클릭할 수 있게 점수 보여줌
-        //결과버튼 5개 클릭하면 저장
-        showTable();
-    }
-}
-async function RollDiceOnce() {
+async function RollDice() {
+    Dice.updateDiceCount(5-saveDice.length);
+    showPossibleScore=new Player();//임시로 보일 스코어
     Dice.throwDice(); // 주사위 굴리기 함수 호출
     rollBtn.disabled = true; // 버튼 비활성화
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    if(Dice.diceResult.length!=5){
+    await new Promise(resolve => setTimeout(resolve, 2500));//2.5초 대기
+    if(Dice.diceResult.length!=5-saveDice.length){//2.5초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
         rollBtn.disabled = false;
         return;
     }
-    nowScore(turn%playerCount);
-    console.log(Dice.diceResult);
+    rollCount++;
+    nowScore(turn%playerCount+1);//선택할 수 있는 점수 표시
+
+    if(rollCount<3){//3번까지 굴릴 수 있음
+        rollBtn.disabled = false;
+    }
 }
 
 function nowScore(playerNum){
     //추가할 수 있는 점수 표시
-    for(let i=1;i<=12;i++){
+    for(let i=0;i<12;i++){
         if(!players[playerNum].visited[i]){
-            calculateScore(i,playerNum);
+            calculateScore(i+1,playerNum);
         }
         else{
         }
@@ -168,7 +137,6 @@ function showTable() {
 
 function selectTable(playerIndex, category,i) {
     const possibleValue = showPossibleScore[category];
-
     const cell = document.querySelector(`.score[data-player="${playerIndex}"][data-category="${category}"]`);
     // 기존 버튼 제거
     const existingButton = cell.querySelector('button');
@@ -191,10 +159,11 @@ function selectTable(playerIndex, category,i) {
     button.style.backgroundColor = 'yellow'; // 임시 디버깅용
 
     button.addEventListener('click', () => {
-        console.log('버튼이 클릭되었습니다!');
         // 점수 반영
         players[playerIndex][category] = possibleValue;
-
+        players[playerIndex].Subtotal = players[playerIndex].Ones + players[playerIndex].Twos + players[playerIndex].Threes + players[playerIndex].Fours + players[playerIndex].Fives + players[playerIndex].Sixes;
+        players[playerIndex].Bonus = players[playerIndex].Subtotal >= 63 ? 35 : 0;
+        players[playerIndex].Total = players[playerIndex].Subtotal + players[playerIndex].Bonus + players[playerIndex].Choice + players[playerIndex].FourOfAKind + players[playerIndex].FullHouse + players[playerIndex].SmallStraight + players[playerIndex].LargeStraight + players[playerIndex].Yacht;
         // 표 업데이트
         showTable();
 
@@ -209,7 +178,6 @@ function selectTable(playerIndex, category,i) {
         Yacht();
         return;
     });
-    console.log(cell.childNodes); // 버튼이 추가되었는지 확인
     cell.appendChild(button);
 
 }
