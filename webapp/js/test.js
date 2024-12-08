@@ -1,4 +1,3 @@
-// 야추를 만들기
 import * as Dice from './Dice.js';
 const rollBtn = document.querySelector('#roll-btn');// URL 파라미터 읽기
 const params = new URLSearchParams(window.location.search);
@@ -32,13 +31,15 @@ let showPossibleScore = new Player();
 let saveDice = [];
 let turn =0;
 let rollCount=0;
+let diceResult = [];
 PlayerSet();
 showTable();
 // 초기화 및 실행
 Dice.initPhysics();
 Dice.initScene(5);  
 Dice.updateDiceCount(4);
-console.log(Dice.diceResult);
+rollBtn.addEventListener('click', RollDice);
+rollBtn.disabled = true;
 Yacht();
 function PlayerSet(){
     players = Array.from({ length: playerCount + 1 }, () => new Player());
@@ -53,31 +54,80 @@ function Yacht(){
         return;
     }
     let i=turn%playerCount+1;
-    console.log(players[i].name+"의 차례입니다.");
     Dice.updateDiceCount(5);
     saveDice = []; //저장할 주사위
     rollCount=0;
-    rollBtn.addEventListener('click', RollDice);
+    render();
+    rollBtn.disabled = false;
 }
 
 async function RollDice() {
+    hideMessage();
     Dice.updateDiceCount(5-saveDice.length);
     showPossibleScore=new Player();//임시로 보일 스코어
     Dice.throwDice(); // 주사위 굴리기 함수 호출
     rollBtn.disabled = true; // 버튼 비활성화
-    await new Promise(resolve => setTimeout(resolve, 2500));//2.5초 대기
-    if(Dice.diceResult.length!=5-saveDice.length){//2.5초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
+    await new Promise(resolve => setTimeout(resolve, 2000));//2초 대기
+    if(Dice.diceResult.length!=5-saveDice.length){//2초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
+        showMessage("2초 안에 주사위가 결정되지 않았습니다. 다시 굴려주세요.");
         rollBtn.disabled = false;
         return;
     }
     rollCount++;
+    diceResult = [...Dice.diceResult, ...saveDice];
     nowScore(turn%playerCount+1);//선택할 수 있는 점수 표시
-
+    render();
     if(rollCount<3){//3번까지 굴릴 수 있음
         rollBtn.disabled = false;
     }
 }
+function showMessage(message) {
+    const messageBox = document.getElementById("message-box");
+    messageBox.textContent = message;
+    messageBox.style.display = "block";
+}
+function hideMessage() {
+    const messageBox = document.getElementById("message-box");
+    messageBox.style.display = "none";
+}
+// 화면 렌더링
+function render() {
+// Dice.diceResult 표시
+const diceResultDiv = document.getElementById("dice-result");
+diceResultDiv.innerHTML = "";
 
+Dice.diceResult.forEach((diceValue, index) => {
+    const diceElement = createDiceElement(diceValue, () => {
+    saveDice.push(diceValue);
+    Dice.diceResult.splice(index, 1); // 주사위 제거
+    render();
+    });
+    diceResultDiv.appendChild(diceElement);
+});
+
+// saveDice 표시
+const savedDiceDiv = document.getElementById("saved-dice");
+savedDiceDiv.innerHTML = "";
+
+saveDice.forEach((diceValue, index) => {
+    const diceElement = createDiceElement(diceValue, () => {
+    if (Dice.diceResult.length < 5) {
+        Dice.diceResult.push(diceValue);
+        saveDice.splice(index, 1); // 저장된 주사위 제거
+        render();
+    }
+    });
+    savedDiceDiv.appendChild(diceElement);
+});
+}
+
+function createDiceElement(value, onClick) {
+const diceElement = document.createElement("div");
+diceElement.className = "dice";
+diceElement.textContent = value;
+diceElement.addEventListener("click", onClick);
+return diceElement;
+}
 function nowScore(playerNum){
     //추가할 수 있는 점수 표시
     for(let i=0;i<12;i++){
@@ -145,7 +195,7 @@ function selectTable(playerIndex, category,i) {
     // 새 버튼 추가
     const button = document.createElement('button');
     button.textContent = possibleValue;
-    button.style.color = 'red';
+    button.style.color = 'blue';
     button.style.fontWeight = 'bold';
     button.style.backgroundColor = 'transparent';
     button.style.border = 'none';
@@ -154,9 +204,6 @@ function selectTable(playerIndex, category,i) {
     button.style.zIndex = '10';
     //임시임시
     //임시임시
-    button.style.width = '50px';
-    button.style.height = '30px';
-    button.style.backgroundColor = 'yellow'; // 임시 디버깅용
 
     button.addEventListener('click', () => {
         // 점수 반영
@@ -186,7 +233,7 @@ function calculateScore(i,playerNum) {
     switch (i) {
         case 1: // Ones
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 1) {
+                if (diceResult[j] === 1) {
                     showPossibleScore.Ones += 1;
                 }
             }
@@ -194,7 +241,7 @@ function calculateScore(i,playerNum) {
             break;
         case 2: // Twos
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 2) {
+                if (diceResult[j] === 2) {
                     showPossibleScore.Twos += 2;
                 }
             }
@@ -202,7 +249,7 @@ function calculateScore(i,playerNum) {
             break;
         case 3: // Threes
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 3) {
+                if (diceResult[j] === 3) {
                     showPossibleScore.Threes += 3;
                 }
             }
@@ -210,7 +257,7 @@ function calculateScore(i,playerNum) {
             break;
         case 4: // Fours
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 4) {
+                if (diceResult[j] === 4) {
                     showPossibleScore.Fours += 4;
                 }
             }
@@ -218,7 +265,7 @@ function calculateScore(i,playerNum) {
             break;
         case 5: // Fives
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 5) {
+                if (diceResult[j] === 5) {
                     showPossibleScore.Fives += 5;
                 }
             }
@@ -226,7 +273,7 @@ function calculateScore(i,playerNum) {
             break;
         case 6: // Sixes
             for (let j = 0; j < 5; j++) {
-                if (Dice.diceResult[j] === 6) {
+                if (diceResult[j] === 6) {
                     showPossibleScore.Sixes += 6;
                 }
             }
@@ -234,38 +281,38 @@ function calculateScore(i,playerNum) {
             break;
         case 7: // Choice
             for (let j = 0; j < 5; j++) {
-                showPossibleScore.Choice += Dice.diceResult[j];
+                showPossibleScore.Choice += diceResult[j];
             }
             selectTable(playerNum, "Choice",7);
             break;
         case 8: // Four of a Kind
-            if (hasNOfAKind(Dice.diceResult, 4)) {
+            if (hasNOfAKind(diceResult, 4)) {
                 for (let j = 0; j < 5; j++) {
-                    showPossibleScore.FourOfAKind += Dice.diceResult[j];
+                    showPossibleScore.FourOfAKind += diceResult[j];
                 }
             }
             selectTable(playerNum, "FourOfAKind",8);
             break;
         case 9: // Full House
-            if (isFullHouse(Dice.diceResult)) {
+            if (isFullHouse(diceResult)) {
                 showPossibleScore.FullHouse = 25;
             }
             selectTable(playerNum, "FullHouse",9);
             break;
         case 10: // Small Straight
-            if (isSmallStraight(Dice.diceResult)) {
+            if (isSmallStraight(diceResult)) {
                 showPossibleScore.SmallStraight = 30;
             }
             selectTable(playerNum, "SmallStraight",10);
             break;
         case 11: // Large Straight
-            if (isLargeStraight(Dice.diceResult)) {
+            if (isLargeStraight(diceResult)) {
                 showPossibleScore.LargeStraight = 40;
             }
             selectTable(playerNum, "LargeStraight",11);
             break;
         case 12: // Yacht
-            if (hasNOfAKind(Dice.diceResult, 5)) {
+            if (hasNOfAKind(diceResult, 5)) {
                 showPossibleScore.Yacht = 50;
             }
             selectTable(playerNum, "Yacht",12);

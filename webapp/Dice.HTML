@@ -16,8 +16,19 @@
             <div class="score">Score: <span id="score-result">0</span></div>
             <button id="roll-btn">Roll dice</button>
         </div>
+        <!-- 저장 혹은 굴리기 -->
+        <div class="dice-section">
+            <div class="section">
+                <h2>현재 Dice.diceResult</h2>
+                <div id="dice-result"></div>
+            </div>
+            <div class="section">
+                <h2>SaveDice</h2>
+                <div id="saved-dice"></div>
+            </div>
+        </div>
     </div>
-    
+    <div id="message-box" style="display: none; position: absolute; top: 50px; left: 50%; transform: translateX(-50%); background-color: #ffdddd; color: #444; padding: 10px; border: 1px solid #cc0000; border-radius: 5px;"></div>
     <!-- 동적 점수판 -->
     <div class="scoreboard"></div>
     <!-- 자바스크립트 라이브러리 -->

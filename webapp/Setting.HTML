@@ -34,6 +34,7 @@
         }
 
         function increaseCount() {
+            if (playerCount === 4) return;// 플레이어 수가 4이면 늘리지 않음
             playerCount++;
             document.getElementById("playerCount").textContent = playerCount;
 
