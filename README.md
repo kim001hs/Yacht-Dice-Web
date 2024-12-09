@@ -116,7 +116,7 @@ async function RollDice() {
 test.js의 RollDice()에서 주사위가 끼었다고 판단하는 시간을 2초로 설정했습니다. 이를 변경하여 좀 더 빠른 판단을 하거나 느리지만 다시 주사위를 던지는 비율을 낮출 수 있습니다.
 
 ### 기술 스택
-    ![img](https://www.google.com/url?sa=i&url=https%3A%2F%2Fbrunch.co.kr%2F%40jongmookang%2F6&psig=AOvVaw2NC520GsmSIs94l_b6PfJC&ust=1733832080465000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjxyf3RmooDFQAAAAAdAAAAABAE)
+    ![img](https://www.google.com/url?sa=i&url=https%3A%2F%2Fbrunch.co.kr%2F%40jongmookang%2F6&psig=AOvVaw2NC520GsmSIs94l_b6PfJC&ust=1733832080465000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjxyf3RmooDFQAAAAAdAAAAABAE)](https://www.icia.co.kr/upload/editor/tmpphp5vH0bCbsh.png)
 
 
 ### License
