@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yacht Setting</title>
+    <!-- CSS 연결 -->
+    <link rel="stylesheet" href="css/style2.css">
+</head>
+<body>
+    <h3>플레이어 수: <span id="playerCount">1</span></h3>
+
+    <!-- 닉네임 입력 창들을 추가할 컨테이너 -->
+    <div id="nicknameContainer">
+        <div id="player-1">
+            <input type="text" placeholder="플레이어 1 닉네임">
+        </div>
+    </div>
+
+    <!-- 버튼 컨테이너 -->
+    <div class="control-buttons">
+        <button onclick="decreaseCount()">-</button>
+        <button onclick="increaseCount()">+</button>
+        <button id="save-player">✔</button>
+    </div>
+
+    <script>
+        var playerCount = 1;
+
+        function decreaseCount() {
+            if (playerCount === 1) return; // 플레이어 수가 1이면 줄이지 않음
+            playerCount--;
+            document.getElementById("playerCount").textContent = playerCount;
+
+            // 마지막 플레이어의 닉네임 입력 창 삭제
+            const playerInput = document.getElementById(`player-${playerCount + 1}`);
+            if (playerInput) {
+                playerInput.remove();
+            }
+        }
+
+        function increaseCount() {
+            if (playerCount === 4) return; // 플레이어 수가 4이면 늘리지 않음
+            playerCount++;
+            document.getElementById("playerCount").textContent = playerCount;
+
+            // 새로운 닉네임 입력 창 추가
+            const nicknameContainer = document.getElementById("nicknameContainer");
+
+            // 새로운 닉네임 입력 창 생성
+            const newPlayerDiv = document.createElement("div");
+            newPlayerDiv.id = `player-${playerCount}`;
+            newPlayerDiv.innerHTML = `
+
+                <input type="text" placeholder="플레이어 ${playerCount} 닉네임">
+            `;
+
+            // 닉네임 컨테이너에 추가
+            nicknameContainer.appendChild(newPlayerDiv);
+        }
+    </script>
+    <script type="module" src="js/Setting.js"></script>
+</body>
+</html>
