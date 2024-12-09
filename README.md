@@ -1,149 +1,153 @@
-# Yacht-Dice-Web
- - Yacht-Dice-Web은 Yacht게임을 웹에서 즐길 수 있도록 만든 게임입니다.
- - Github Pages로 연동을 해 놓아 [이 링크](https://kim001hs.github.io/Yacht-Dice-Web/)로 바로 플레이 하실 수 있습니다.
+### 한국어버전 md파일은 [여기](https://github.com/kim001hs/Yacht-Dice-Web/blob/main/READMEkr.md)있습니다
+### Yacht-Dice-Web
 
+- Yacht-Dice-Web is a game that allows users to play the Yacht game on the web.  
+- It is linked to GitHub Pages and can be played directly via [this link](https://kim001hs.github.io/Yacht-Dice-Web/).
 
-## 목차
+## Table of Contents
 
-1.  [실행하기](#실행하기)
-2.  [게임 방법](#게임-방법)
-    1.  [게임 입장 화면](#게임-입장-화면)
-    2.  [게임 시작 화면](#게임-시작-화면)
-    3.  [주사위 저장 화면](#주사위-저장-화면)
-    4.  [다시 굴리기](#다시-굴리기)
-3.  [코드 설명](#코드-설명)
-4.  [기술 스택](#기술-스택)
-5.  [License](#License)
-6.  [Reference](#Reference)
-7.  [Review](#review)
+1. [How to Run](#how-to-run)
+2. [Game Instructions](#game-instructions)
+   1. [Game Entry Screen](#game-entry-screen)
+   2. [Game Start Screen](#game-start-screen)
+   3. [Dice Saving Screen](#dice-saving-screen)
+   4. [Re-Roll](#re-roll)
+3. [Code Description](#code-description)
+4. [Tech Stack](#tech-stack)
+5. [License](#license)
+6. [Reference](#reference)
+7. [Review](#review)
 
-### 실행하기
+### How to Run
 
--   Web Link
-    -   https://kim001hs.github.io/Yacht-Dice-Web/
+- **Web Link**  
+  - [https://kim001hs.github.io/Yacht-Dice-Web/](https://kim001hs.github.io/Yacht-Dice-Web/)
 
--   로컬 서버 실행
-    -  github에서 다운 후 Python 서버, VSCode Live Server 등 로컬 서버로 실행
+- **Run Locally**  
+  - Download from GitHub and run it on a local server using Python server, VSCode Live Server, etc.
 
+### Demo Video
 
-###  실행 영상
+[Demo Video](https://youtu.be/ebhHvrGuSeA)
 
-[실행 영상](https://youtu.be/ebhHvrGuSeA)
- 
+### Game Instructions
 
-### 게임 방법
+#### Game Entry Screen
 
-#### 게임 입장 화면
+![start](image/start.png)  
+This is the initial settings screen before the game starts. You can adjust the number of players using the "+" and "−" buttons and set nicknames through the input fields. Once you've finished entering the details, click the check button to proceed to the next screen.
 
-![start](image/start.png)
-시작 전 세팅화면입니다. +와 -버튼을 통해 플레이어 수를 조정할 수 있고 입력란을 통해 닉네임을 설정할 수 있습니다. 
-입력을 완료한 후 체크버튼을 누르면 다음 화면으로 넘어갑니다
+#### Game Start Screen
 
-#### 게임 시작 화면
+![start](image/diceStart.png)  
+This is the default screen after completing the settings. Scores are displayed on the left, and the "Roll Dice" button at the bottom right allows you to roll the dice up to three times per turn.
 
-![start](image/diceStart.png)
-세팅 후 나오는 기본 화면입니다. 왼쪽에 점수가 나오고 오른쪽 밑의 Roll Dice버튼을 통해 각 턴마다 주사위를 세 번까지 굴릴 수 있습니다. 
+#### Dice Saving Screen
 
-#### 주사위 저장 화면
+![start](image/saveDice.png)  
+This screen appears after rolling the dice at least once. Possible scores are displayed on the left, and clicking a score will save it and end the turn. On the right, you can see the dice to roll and the dice to save. You can switch them by clicking.
 
-![start](image/saveDice.png)
-주사위를 한 번 이상 굴리면 나오는 화면입니다. 왼쪽에는 획득 가능한 점수가 나옵니다. 점수를 클릭하면 그 점수가 저장되고 턴이 넘어갑니다.
-오른쪽에는 굴릴 주사위와 저장할 주사위가 나옵니다. 클릭을 통해 전환할 수 있습니다.
+#### Re-Roll
 
-#### 다시 굴리기
+![start](image/reRoll.png)  
+If the dice values are not determined within 2 seconds due to overlaps or other issues, the game assumes an error and allows you to re-roll the dice.
 
-![start](image/reRoll.png)
-2초안에 주사위의 눈이 결정되지 않았을 시 끼임 등으로 정해지지 않았다고 가정해 주사위를 다시 굴릴 수 있도록 합니다.
+### Code Description
 
+#### Core Code
 
-### 코드 설명
-
-#### 핵심 코드
-```
-function Yacht(){
-    if(turn==playerCount*12){
-        console.log("게임 종료");
+```javascript
+function Yacht() {
+    if (turn == playerCount * 12) {
+        console.log("Game Over");
         return;
     }
-    let i=turn%playerCount+1;
+    let i = turn % playerCount + 1;
     Dice.updateDiceCount(5);
-    saveDice = []; //저장할 주사위
-    rollCount=0;
+    saveDice = []; // Dice to save
+    rollCount = 0;
     render();
     rollBtn.disabled = false;
 }
+
 async function RollDice() {
     hideMessage();
-    Dice.updateDiceCount(5-saveDice.length);
-    showPossibleScore=new Player();//임시로 보일 스코어
-    Dice.throwDice(); // 주사위 굴리기 함수 호출
-    rollBtn.disabled = true; // 버튼 비활성화
-    await new Promise(resolve => setTimeout(resolve, 2000));//2초 대기
-    if(Dice.diceResult.length!=5-saveDice.length){//2초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
-        showMessage("2초 안에 주사위가 결정되지 않았습니다. 다시 굴려주세요.");
+    Dice.updateDiceCount(5 - saveDice.length);
+    showPossibleScore = new Player(); // Temporary scores
+    Dice.throwDice(); // Call dice rolling function
+    rollBtn.disabled = true; // Disable button
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+    if (Dice.diceResult.length != 5 - saveDice.length) { // Assume overlap if not resolved
+        showMessage("The dice values weren't determined within 2 seconds. Please re-roll.");
         rollBtn.disabled = false;
         return;
     }
     rollCount++;
     diceResult = [...Dice.diceResult, ...saveDice];
-    nowScore(turn%playerCount+1);//선택할 수 있는 점수 표시
+    nowScore(turn % playerCount + 1); // Display possible scores
     render();
-    if(rollCount<3){//3번까지 굴릴 수 있음
+    if (rollCount < 3) { // Allow up to three rolls
         rollBtn.disabled = false;
     }
 }
 ```
-게임을 진행시키는 코드입니다. 새로운 턴마다 Yacht()을 호출하도록 했고 RollDice()를 통해 세번까지 던지기, 2초동안 주사위가 정해지지 않으면 다시 굴리기, nowScore()을 통해 현재 점수 표시, selectScore()을 통해 클릭 및 저장 가능한 점수 표시, render()를 통해 주사위 저장하기 등을 구현했습니다.
 
-#### 변경 권고 코드
-```
+This code drives the game. It initiates a new turn with `Yacht()`, allows up to three rolls with `RollDice()`, re-rolls if the dice values are not determined within 2 seconds, and displays current and selectable scores through `nowScore()` and `render()`.
+
+#### Suggested Modifications
+
+```javascript
 function increaseCount() {
-    if (playerCount === 4) return; // 플레이어 수가 4이면 늘리지 않음
+    if (playerCount === 4) return; // Limit players to 4
 }
 ```
-indes.html의 increaseCount()에서 플레이어 수를 최대 4로 제한했습니다. 수를 변경하면 더 많은 플레이어를 추가할 수 있습니다.
 
-```
+In `increaseCount()` of `index.html`, the maximum number of players is set to 4. Modify this to allow more players if needed.
+
+```javascript
 async function RollDice() {
-    await new Promise(resolve => setTimeout(resolve, 2000));//2초 대기
-    if(Dice.diceResult.length!=5-saveDice.length){//2초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
-        showMessage("2초 안에 주사위가 결정되지 않았습니다. 다시 굴려주세요.");
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+    if (Dice.diceResult.length != 5 - saveDice.length) { // Assume overlap
+        showMessage("The dice values weren't determined within 2 seconds. Please re-roll.");
         rollBtn.disabled = false;
         return;
     }
 }
 ```
-test.js의 RollDice()에서 주사위가 끼었다고 판단하는 시간을 2초로 설정했습니다. 이를 변경하여 좀 더 빠른 판단을 하거나 느리지만 다시 주사위를 던지는 비율을 낮출 수 있습니다.
 
-### 기술 스택
+In `RollDice()` of `test.js`, the decision time for stuck dice is set to 2 seconds. Adjust this to make faster or slower decisions as needed.
+
+### Tech Stack
+
 ![stack](image/stack.png)
 
-
 ### License
-    [MIT License](https://github.com/kim001hs/Yacht-Dice-Web/blob/main/LICENSE)
 
+[MIT License](https://github.com/kim001hs/Yacht-Dice-Web/blob/main/LICENSE)
 
 ### Reference
-Third-Party Libraries and Licenses
 
-This project includes code from the following source(s):
-
+**Third-Party Libraries and Licenses**  
+This project includes code from the following source(s):  
 - [Threejs-rolling-dice-tutorial](https://github.com/uuuulala/Threejs-rolling-dice-tutorial/tree/master) by [uuuulala], licensed under the MIT License.
 
 ### Review
 
-#### Notifiable changes that I made
-- 주사위 5개를 던지는 게임과 Yacht(야추)의 룰을 결합하여 Yacht을 만들었습니다
-- 주사위 수를 변경시키는 함수
-- 플레이어 인원을 추가, 감소시키는 기능
-- 점수판 표시 및 업데이트 기능
-- 저장할 주사위 선택 및 남은 주사위만금 굴리는 기능
+#### Notable Changes I Made
+
+- Combined the rules of the Yacht game with a 5-dice rolling game.
+- Added functions to adjust the number of dice and players.
+- Implemented score display and updates.
+- Added functionality to save dice and roll only the remaining dice.
 
 #### Limitations
-- 턴이 넘어갈수록 렉이 심해집니다(고치기 위해 여러 방법을 시도했지만 결국 고치지 못함..)
-- HTML,css,js에 관해 전혀 모르는 상태로 공부를 위해 시작했지만 css부분을 공부 하지 못함 (대부분 chat-gpt를 사용해 해결)
-- 게임 종료시 특별한 화면을 추가하고 싶었으나 시간 부족으로 추가하지 못함
-- 전혀 모르는 상태에서 three.js, cannon을 사용하다보니 코드수정이 거의 불가능했음(공부를 먼저 하고 시작했으면 좋았겠다)
+
+- Game performance slows down as turns progress (tried various fixes but couldn't resolve the issue).
+- Started the project with no prior knowledge of HTML, CSS, or JavaScript; couldn't study CSS thoroughly (used ChatGPT for most issues).
+- Couldn't add a special ending screen due to time constraints.
+- Found it nearly impossible to modify code involving Three.js and Cannon.js due to lack of familiarity (should have studied beforehand).
 
 #### Overall
-- 특히 js를 포함해 많은 것들을 프로젝트를 통해 배웠고 앞으로도 새로운 도전을 해봐야겠다
+
+This project taught me a lot, especially about JavaScript. I look forward to taking on new challenges in the future.
+
