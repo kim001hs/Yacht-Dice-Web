@@ -14,8 +14,8 @@
 
 .dice-section {
     position: absolute; /* 부모 컨테이너 기준 */
-    bottom: 10px; /* 화면 하단에서 약간 위로 */
-    left: 10px; /* 화면 왼쪽에서 약간 오른쪽으로 */
+    bottom: 50%; /* 가운데 */
+    right: 50px; /* 화면 왼쪽에서 약간 오른쪽으로 */
     background-color: #ffffff;
     padding: 10px;
     border-radius: 10px;
@@ -29,7 +29,62 @@
 
 .dice-section h2 {
     margin: 0 0 5px 0;
-    font-size: 16px;
+    font-size: 20px;
+}
+
+/* Fixed size for dice result and saved dice containers */
+#dice-result, #saved-dice {
+    width: 400px; /* 고정된 가로 크기 */
+    height: 100px; /* 고정된 세로 크기 */
+    overflow-y: auto; /* 콘텐츠가 넘칠 경우 스크롤 */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px auto;
+    padding: 10px;
+    box-sizing: border-box; /* 패딩 포함 크기 유지 */
+}
+
+/* Dice Button Styles */
+.dice-button {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    text-align: center;
+    line-height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 15px; /* 둥근 모서리 */
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.dice-button:hover {
+    background-color: #4CAF50;
+    color: white;
+    transform: scale(1.1);
+}
+
+.dice-button:active {
+    background-color: #388E3C;
+}
+
+/* Container for Dice Result and SaveDice */
+#dice-result, #saved-dice {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 canvas {
@@ -60,14 +115,27 @@ canvas {
 .ui-controls #roll-btn {
     background-color: #4BC0C8;
     font-weight: bold;
-    border: none;
-    padding: .5em 1em;
-    text-decoration: none;
-    display: inline-block;
+    border: 2px solid #000000;
+    height: 8em; /* 버튼의 높이 */
+    width: 8em; /* 버튼의 너비 */
+    border-radius: 50%; /* 원형으로 만들기 */
+    text-align: center;
+    line-height: 3em; /* 텍스트를 가운데로 정렬 */
     cursor: pointer;
-    margin: 1em 0 0 0;
-    transition: background-color 0.2s, transform 0.1s;
+    margin: 0; /* 불필요한 여백 제거 */
+    position: absolute; /* 위치를 조정할 수 있게 설정 */
+    top: 1500%; /* 원하는 위치 */
+    left: 150%; /* 원하는 위치 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* 입체감 있는 그림자 */
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s; /* 전환 효과 */
 }
+
+.ui-controls #roll-btn:hover {
+    background-color: #3A9FA6; /* 호버 시 색상 변경 */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.12); /* 호버 시 그림자 강화 */
+    transform: scale(1.1); /* 호버 시 약간 확대 */
+}
+
 
 .ui-controls #roll-btn:active {
     transform: translateY(4px);
@@ -153,11 +221,11 @@ a img.icon {
 }
 
 .scoreboard .score button {
-    font-size: 14px;
+    font-size: 16px;
     padding: 5px 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #ffe680;
+    background-color: #b5e687;
     cursor: pointer;
     transition: 0.3s;
 }

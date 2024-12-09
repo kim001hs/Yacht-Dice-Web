@@ -1,0 +1,77 @@
+/* 전체 컨테이너 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: relative;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 닉네임 입력 컨테이너 */
+#nicknameContainer {
+    margin-bottom: 20px; /* 닉네임 컨테이너와 버튼 간 간격 */
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 닉네임 입력 필드 */
+#nicknameContainer input[type="text"] {
+    width: 100%; /* 입력 필드의 너비 */
+    height: 50px; /* 입력 필드의 높이 증가 */
+    padding: 10px; /* 내부 여백 */
+    font-size: 1.2rem; /* 글자 크기 증가 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+#nicknameContainer input[type="text"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* 버튼 컨테이너 */
+.control-buttons {
+    display: flex;
+    justify-content: center; /* 가로 정렬 */
+    gap: 20px; /* 버튼 간 간격 */
+    position: absolute;
+    bottom: 30px; /* 화면 아래에서 고정 위치 */
+}
+
+/* 버튼 스타일 */
+button {
+    font-size: 1.2rem;
+    width: 50px; /* 정사각형 */
+    height: 50px; /* 정사각형 */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #3e8e41;
+}

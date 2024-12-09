@@ -4,9 +4,9 @@ import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 
 const canvasEl = document.querySelector('#canvas');
 const scoreResult = document.querySelector('#score-result');
-const rollBtn = document.querySelector('#roll-btn');
 let renderer, scene, camera, diceMesh, physicsWorld;
-
+let wallsCreated = false;
+let floorCreated = false;
 const params = {
     segments: 40,
     edgeRadius: .1,
@@ -52,7 +52,6 @@ export function initScene(numberOfDice) {
     createFloor();
     diceMesh = createDiceMesh();
     }
-    scoreResult.innerHTML = '';
     
     diceResult = [];
     for (let i = 0; i < numberOfDice; i++) {
@@ -83,6 +82,8 @@ export function initPhysics() {
 }
 
 function createWalls() {
+    if (wallsCreated) return;
+    wallsCreated = true;
     const wallThickness = .5; // 벽 두께
     const wallHeight = 5;   // 벽 높이
     const wallSize = 10;     // 벽 길이 (바닥 크기와 동일)
@@ -132,6 +133,8 @@ function createWalls() {
 }
 
 function createFloor() {
+    if (floorCreated) return;
+    floorCreated = true;
     const floor = new THREE.Mesh(
         new THREE.PlaneGeometry(1000, 1000),
         new THREE.ShadowMaterial({//바닥에 그림자만 보이게 특수한 재질
@@ -284,55 +287,49 @@ function createInnerGeometry() {
 }
 
 function addDiceEvents(dice) {
-    dice.body.addEventListener('sleep', (e) => {
+    if (!dice.body.hasEventListener('sleep')) {
+        dice.body.addEventListener('sleep', (e) => {
+            dice.body.allowSleep = false;
 
-        dice.body.allowSleep = false;
+            const euler = new CANNON.Vec3();
+            e.target.quaternion.toEuler(euler);
 
-        const euler = new CANNON.Vec3();
-        e.target.quaternion.toEuler(euler);
+            const eps = 0.1;
+            let isZero = (angle) => Math.abs(angle) < eps;
+            let isHalfPi = (angle) => Math.abs(angle - 0.5 * Math.PI) < eps;
+            let isMinusHalfPi = (angle) => Math.abs(0.5 * Math.PI + angle) < eps;
+            let isPiOrMinusPi = (angle) => (Math.abs(Math.PI - angle) < eps || Math.abs(Math.PI + angle) < eps);
 
-        const eps = .1;
-        let isZero = (angle) => Math.abs(angle) < eps;
-        let isHalfPi = (angle) => Math.abs(angle - .5 * Math.PI) < eps;
-        let isMinusHalfPi = (angle) => Math.abs(.5 * Math.PI + angle) < eps;
-        let isPiOrMinusPi = (angle) => (Math.abs(Math.PI - angle) < eps || Math.abs(Math.PI + angle) < eps);
-
-
-        if (isZero(euler.z)) {
-            if (isZero(euler.x)) {
-                showRollResults(1);
-            } else if (isHalfPi(euler.x)) {
-                showRollResults(4);
-            } else if (isMinusHalfPi(euler.x)) {
-                showRollResults(3);
-            } else if (isPiOrMinusPi(euler.x)) {
-                showRollResults(6);
+            if (isZero(euler.z)) {
+                if (isZero(euler.x)) {
+                    showRollResults(1);
+                } else if (isHalfPi(euler.x)) {
+                    showRollResults(4);
+                } else if (isMinusHalfPi(euler.x)) {
+                    showRollResults(3);
+                } else if (isPiOrMinusPi(euler.x)) {
+                    showRollResults(6);
+                } else {
+                    dice.body.allowSleep = true;
+                }
+            } else if (isHalfPi(euler.z)) {
+                showRollResults(2);
+            } else if (isMinusHalfPi(euler.z)) {
+                showRollResults(5);
             } else {
-                // landed on edge => wait to fall on side and fire the event again
                 dice.body.allowSleep = true;
             }
-        } else if (isHalfPi(euler.z)) {
-            showRollResults(2);
-        } else if (isMinusHalfPi(euler.z)) {
-            showRollResults(5);
-        } else {
-            // landed on edge => wait to fall on side and fire the event again
-            dice.body.allowSleep = true;
-        }
-    });
+        });
+    }
 }
+
 
 function showRollResults(score) {
     diceResult.push(score);
-    if (scoreResult.innerHTML === '') {
-        scoreResult.innerHTML += score;
-    } else {
-        scoreResult.innerHTML += (' + ' + score);
-    }
 }
 function render() {
     physicsWorld.fixedStep();
-
+    
     for (let dice of diceArray) {
         dice.mesh.position.copy(dice.body.position)
         dice.mesh.quaternion.copy(dice.body.quaternion)
@@ -350,23 +347,21 @@ function updateSceneSize() {
 
 export function throwDice() {
     diceResult = [];
-    scoreResult.innerHTML = '';
 
     diceArray.forEach((d, dIdx) => {
-
         d.body.velocity.setZero();
         d.body.angularVelocity.setZero();
 
-        d.body.position = new CANNON.Vec3(4, dIdx * 1.5, -.5);
+        d.body.position.set(4, dIdx * 1.5, -0.5);
         d.mesh.position.copy(d.body.position);
 
-        d.mesh.rotation.set(2 * Math.PI * Math.random(), 0, 2 * Math.PI * Math.random())
+        d.mesh.rotation.set(2 * Math.PI * Math.random(), 0, 2 * Math.PI * Math.random());
         d.body.quaternion.copy(d.mesh.quaternion);
 
         const force = 1 + 2 * Math.random();
         d.body.applyImpulse(
             new CANNON.Vec3(-force, force, 0),
-            new CANNON.Vec3(0, 0, .2)
+            new CANNON.Vec3(0, 0, 0.2)
         );
 
         d.body.allowSleep = true;

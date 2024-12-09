@@ -92,41 +92,46 @@ function hideMessage() {
 }
 // 화면 렌더링
 function render() {
-// Dice.diceResult 표시
-const diceResultDiv = document.getElementById("dice-result");
-diceResultDiv.innerHTML = "";
+    const diceResultDiv = document.getElementById("dice-result");
+    const savedDiceDiv = document.getElementById("saved-dice");
 
-Dice.diceResult.forEach((diceValue, index) => {
-    const diceElement = createDiceElement(diceValue, () => {
-    saveDice.push(diceValue);
-    Dice.diceResult.splice(index, 1); // 주사위 제거
-    render();
+    // Clear only necessary elements
+    diceResultDiv.innerHTML = "";
+    savedDiceDiv.innerHTML = "";
+
+    // Append dice results
+    Dice.diceResult.forEach((diceValue, index) => {
+        const diceElement = createDiceElement(diceValue, () => {
+            saveDice.push(diceValue);
+            Dice.diceResult.splice(index, 1); // Remove the dice
+            render();
+        });
+        diceResultDiv.appendChild(diceElement);
     });
-    diceResultDiv.appendChild(diceElement);
-});
 
-// saveDice 표시
-const savedDiceDiv = document.getElementById("saved-dice");
-savedDiceDiv.innerHTML = "";
-
-saveDice.forEach((diceValue, index) => {
-    const diceElement = createDiceElement(diceValue, () => {
-    if (Dice.diceResult.length < 5) {
-        Dice.diceResult.push(diceValue);
-        saveDice.splice(index, 1); // 저장된 주사위 제거
-        render();
-    }
+    // Append saved dice
+    saveDice.forEach((diceValue, index) => {
+        const diceElement = createDiceElement(diceValue, () => {
+            if (Dice.diceResult.length < 5) {
+                Dice.diceResult.push(diceValue);
+                saveDice.splice(index, 1); // Remove the saved dice
+                render();
+            }
+        });
+        savedDiceDiv.appendChild(diceElement);
     });
-    savedDiceDiv.appendChild(diceElement);
-});
 }
 
 function createDiceElement(value, onClick) {
-const diceElement = document.createElement("div");
-diceElement.className = "dice";
-diceElement.textContent = value;
-diceElement.addEventListener("click", onClick);
-return diceElement;
+    const diceElement = document.createElement("button");
+    diceElement.className = "dice-button";
+    diceElement.textContent = value;
+
+    // 기존 이벤트 리스너 제거
+    diceElement.replaceWith(diceElement.cloneNode(true));
+
+    diceElement.addEventListener("click", onClick);
+    return diceElement;
 }
 function nowScore(playerNum){
     //추가할 수 있는 점수 표시
