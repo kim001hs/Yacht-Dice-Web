@@ -15,7 +15,7 @@
 4.  [기술 스택](#기술-스택)
 5.  [License](#License)
 6.  [Reference](#Reference)
-
+7.  [Review](#review)
 
 ### 실행하기
 
@@ -116,7 +116,7 @@ async function RollDice() {
 test.js의 RollDice()에서 주사위가 끼었다고 판단하는 시간을 2초로 설정했습니다. 이를 변경하여 좀 더 빠른 판단을 하거나 느리지만 다시 주사위를 던지는 비율을 낮출 수 있습니다.
 
 ### 기술 스택
-    !()[https://www.google.com/url?sa=i&url=https%3A%2F%2Fbrunch.co.kr%2F%40jongmookang%2F6&psig=AOvVaw2NC520GsmSIs94l_b6PfJC&ust=1733832080465000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjxyf3RmooDFQAAAAAdAAAAABAE]
+    ![img](https://www.google.com/url?sa=i&url=https%3A%2F%2Fbrunch.co.kr%2F%40jongmookang%2F6&psig=AOvVaw2NC520GsmSIs94l_b6PfJC&ust=1733832080465000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJjxyf3RmooDFQAAAAAdAAAAABAE)
 
 
 ### License
@@ -130,15 +130,20 @@ This project includes code from the following source(s):
 
 - [Threejs-rolling-dice-tutorial](https://github.com/uuuulala/Threejs-rolling-dice-tutorial/tree/master) by [uuuulala], licensed under the MIT License.
 
-##### Notifiable changes that I made
+### Review
+
+#### Notifiable changes that I made
 - 주사위 5개를 던지는 게임과 Yacht(야추)의 룰을 결합하여 Yacht을 만들었습니다
 - 주사위 수를 변경시키는 함수
 - 플레이어 인원을 추가, 감소시키는 기능
 - 점수판 표시 및 업데이트 기능
 - 저장할 주사위 선택 및 남은 주사위만금 굴리는 기능
 
-##### Limitations
+#### Limitations
 - 턴이 넘어갈수록 렉이 심해집니다(고치기 위해 여러 방법을 시도했지만 결국 고치지 못함..)
 - HTML,css,js에 관해 전혀 모르는 상태로 공부를 위해 시작했지만 css부분을 공부 하지 못함 (대부분 chat-gpt를 사용해 해결)
 - 게임 종료시 특별한 화면을 추가하고 싶었으나 시간 부족으로 추가하지 못함
 - 전혀 모르는 상태에서 three.js, cannon을 사용하다보니 코드수정이 거의 불가능했음(공부를 먼저 하고 시작했으면 좋았겠다)
+
+#### Overall
+- 특히 js를 포함해 많은 것들을 프로젝트를 통해 배웠고 앞으로도 새로운 도전을 해봐야겠다
