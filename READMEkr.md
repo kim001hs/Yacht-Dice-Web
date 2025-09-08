@@ -59,7 +59,7 @@
 ### 코드 설명
 
 #### 핵심 코드
-```
+```javascript
 function Yacht(){
     if(turn==playerCount*12){
         console.log("게임 종료");
@@ -96,7 +96,7 @@ async function RollDice() {
 게임을 진행시키는 코드입니다. 새로운 턴마다 Yacht()을 호출하도록 했고 RollDice()를 통해 세번까지 던지기, 2초동안 주사위가 정해지지 않으면 다시 굴리기, nowScore()을 통해 현재 점수 표시, selectScore()을 통해 클릭 및 저장 가능한 점수 표시, render()를 통해 주사위 저장하기 등을 구현했습니다.
 
 #### 변경 권고 코드
-```
+```javascript
 function increaseCount() {
     if (playerCount === 4) return; // 플레이어 수가 4이면 늘리지 않음
 }
