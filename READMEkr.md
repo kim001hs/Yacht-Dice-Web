@@ -103,7 +103,7 @@ function increaseCount() {
 ```
 indes.html의 increaseCount()에서 플레이어 수를 최대 4로 제한했습니다. 수를 변경하면 더 많은 플레이어를 추가할 수 있습니다.
 
-```
+```javascript
 async function RollDice() {
     await new Promise(resolve => setTimeout(resolve, 2000));//2초 대기
     if(Dice.diceResult.length!=5-saveDice.length){//2초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
