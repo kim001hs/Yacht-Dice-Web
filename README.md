@@ -142,7 +142,7 @@ This project includes code from the following source(s):
 
 #### Limitations
 
-- Game performance slows down as turns progress (tried various fixes but couldn't resolve the issue).
+- Game performance slows down as turns progress (resolved).
 - Started the project with no prior knowledge of HTML, CSS, or JavaScript; couldn't study CSS thoroughly (used ChatGPT for most issues).
 - Couldn't add a special ending screen due to time constraints.
 - Found it nearly impossible to modify code involving Three.js and Cannon.js due to lack of familiarity (should have studied beforehand).
