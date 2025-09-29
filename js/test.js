@@ -67,9 +67,9 @@ async function RollDice() {
     showPossibleScore=new Player();//임시로 보일 스코어
     Dice.throwDice(); // 주사위 굴리기 함수 호출
     rollBtn.disabled = true; // 버튼 비활성화
-    await new Promise(resolve => setTimeout(resolve, 2000));//2초 대기
+    await new Promise(resolve => setTimeout(resolve, 2500));//2초 대기
     if(Dice.diceResult.length!=5-saveDice.length){//2초 후에도 5개가 아니면 겹친거라 간주하고 다시 굴리기 버튼 활성화
-        showMessage("2초 안에 주사위가 결정되지 않았습니다. 다시 굴려주세요.");
+        showMessage("2.5초 안에 주사위가 결정되지 않았습니다. 다시 굴려주세요.");
         rollBtn.disabled = false;
         return;
     }

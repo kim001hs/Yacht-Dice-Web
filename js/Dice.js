@@ -5,6 +5,8 @@ import * as BufferGeometryUtils from "three/addons/utils/BufferGeometryUtils.js"
 const canvasEl = document.querySelector('#canvas');
 const scoreResult = document.querySelector('#score-result');
 let renderer, scene, camera, diceMesh, physicsWorld;
+let animationId = null;
+let isRendering = false;
 let wallsCreated = false;
 let floorCreated = false;
 const params = {
@@ -58,18 +60,35 @@ export function initScene(numberOfDice) {
         diceArray[i]=(createDice());
         addDiceEvents(diceArray[i]);
     }
-    render();
+    if (!isRendering) {
+        isRendering = true;
+        render();
+    }
 }
 export function updateDiceCount(newNumberOfDice) {
-    // 기존 주사위 삭제
-    diceArray.forEach((dice) => {
-        scene.remove(dice.mesh);
-        physicsWorld.removeBody(dice.body);
-    });
-    diceArray = [];
+    // 현재 개수와 목표 개수의 차이를 계산하여 증감만 수행
+    const currentCount = diceArray.length;
 
-    // 새 주사위 개수로 초기화
-    initScene(newNumberOfDice);
+    if (newNumberOfDice < currentCount) {
+        // 초과 주사위 제거 (뒤에서부터 제거)
+        for (let i = currentCount - 1; i >= newNumberOfDice; i--) {
+            const dice = diceArray[i];
+            if (dice) {
+                scene.remove(dice.mesh);
+                physicsWorld.removeBody(dice.body);
+            }
+        }
+        diceArray.length = newNumberOfDice;
+    } else if (newNumberOfDice > currentCount) {
+        // 부족한 주사위 생성
+        for (let i = currentCount; i < newNumberOfDice; i++) {
+            const newDice = createDice();
+            addDiceEvents(newDice);
+            diceArray[i] = newDice;
+        }
+    }
+    // 주사위 수가 바뀔 때 결과 초기화
+    diceResult = [];
 }
 
 export function initPhysics() {
@@ -336,7 +355,7 @@ function render() {
     }
 
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
+    animationId = requestAnimationFrame(render);
 }
 
 function updateSceneSize() {
